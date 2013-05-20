@@ -9,19 +9,27 @@ class Jetpack_Omnisearch_Plugins {
 	}
 
 	function search( $results, $search_term ) {
-		require_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
 		$search_link = ' <a href="' . admin_url( "plugin-install.php?tab=search&s={$search_term}" ) . '" class="add-new-h2">' . __('Search Plugins') . '</a>';
 		$html = '<h2>' . __('Plugins') . $search_link . '</h2>';
+
+		$html .= $this->results_html( $search_term );
+
+		$results[ __CLASS__ ] = $html;
+		return $results;
+	}
+
+	function results_html( $search_term ) {
+		require_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
 
 		# http://dd32.id.au/projects/wordpressorg-plugin-information-api-docs/
 		$api = plugins_api( 'query_plugins', array( 'search' => $search_term, 'per_page' => 10 ) );
 
 		if ( is_wp_error( $api ) ) {
-			$html .= '<p>' . $api->get_error_message() . '</p>';
+			$html = '<p>' . $api->get_error_message() . '</p>';
 		} elseif( empty( $api->plugins ) ) {
-			$html .= '<p>' . __('No results found.') . '</p>';
+			$html = '<p>' . __('No results found.') . '</p>';
 		} else {
-			$html .= '<ul>';
+			$html = '<ul>';
 			foreach( $api->plugins as $plugin ) {
 				$html .= '<li>'
 						.'<p><strong><a href="' . $plugin->homepage . '">' . $plugin->name . '</a></strong> '
@@ -32,8 +40,7 @@ class Jetpack_Omnisearch_Plugins {
 			$html .= '</ul>';
 		}
 
-		$results[ __CLASS__ ] = $html;
-		return $results;
+		return $html;
 	}
 
 }
