@@ -11,7 +11,9 @@ class Jetpack_Omnisearch_Posts {
 
 	function search( $results, $search_term ) {
 		$post_type_obj = get_post_type_object( $this->post_type );
-		$html = '<h2>' . $post_type_obj->labels->name . '</h2>';
+
+		$search_link = ' <a href="' . admin_url( "edit.php?post_type={$post_type_obj->name}&s={$search_term}" ) . '" class="add-new-h2">' . sprintf( __('Search %s'), $post_type_obj->labels->name ) . '</a>';
+		$html = '<h2>' . $post_type_obj->labels->name . $search_link .'</h2>';
 
 		$query = new WP_Query( array( 's' => $search_term, 'post_type' => $this->post_type, 'posts_per_page' => 10 ) );
 		if( $query->have_posts() ) {

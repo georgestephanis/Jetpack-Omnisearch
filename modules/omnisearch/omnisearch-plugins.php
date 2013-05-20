@@ -10,7 +10,8 @@ class Jetpack_Omnisearch_Plugins {
 
 	function search( $results, $search_term ) {
 		require_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
-		$html = '<h2>' . __('Plugins:') . '</h2>';
+		$search_link = ' <a href="' . admin_url( "plugin-install.php?tab=search&s={$search_term}" ) . '" class="add-new-h2">' . __('Search Plugins') . '</a>';
+		$html = '<h2>' . __('Plugins') . $search_link . '</h2>';
 
 		# http://dd32.id.au/projects/wordpressorg-plugin-information-api-docs/
 		$api = plugins_api( 'query_plugins', array( 'search' => $search_term, 'per_page' => 10 ) );

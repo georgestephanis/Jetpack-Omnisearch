@@ -9,7 +9,8 @@ class Jetpack_Omnisearch_Comments {
 	}
 
 	function search( $results, $search_term ) {
-		$html = '<h2>' . __('Comments:') . '</h2>';
+		$search_link = ' <a href="' . admin_url( "edit-comments.php?s={$search_term}" ) . '" class="add-new-h2">' . __('Search Comments') . '</a>';
+		$html = '<h2>' . __('Comments') . $search_link . '</h2>';
 
 		$comments = get_comments( array(
 			'status' => 'approve',
