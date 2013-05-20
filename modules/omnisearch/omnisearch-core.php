@@ -20,16 +20,20 @@ class Jetpack_Omnisearch {
 
 	function __construct() {
 		self::$instance = $this;
-		add_action( 'init', array( $this, 'init' ) );
-	}
-
-	function init() {
-		wp_register_style( 'omnisearch-admin', plugins_url( 'omnisearch.css', __FILE__ ) );
-
+		add_action( 'wp_loaded', array( $this, 'wp_loaded' ) );
 		add_action(	'jetpack_admin_menu', array( $this, 'jetpack_admin_menu' ) );
 		if( is_admin() ) {
 			add_action( 'admin_bar_menu', array( $this, 'admin_bar_search' ), 4 );
 		}
+	}
+
+	function wp_loaded() {
+		$deps = null;
+		if ( wp_style_is( 'genericons', 'registered' ) ) {
+			$deps = array( 'genericons' );
+		}
+
+		wp_register_style( 'omnisearch-admin', plugins_url( 'omnisearch.css', __FILE__ ), $deps );
 	}
 
 	function jetpack_admin_menu() {
