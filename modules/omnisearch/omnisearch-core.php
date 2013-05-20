@@ -66,6 +66,7 @@ class Jetpack_Omnisearch {
 			</form>
 			<?php if( ! empty( $results ) ): ?>
 				<h3><?php _e('Results:'); ?></h3>
+				<script>var search_term = <?php echo json_encode( $s ); ?>;</script>
 				<?php echo implode( '<hr />', $results ); ?>
 			<?php endif; ?>
 		</div><!-- /wrap -->
