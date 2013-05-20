@@ -39,3 +39,7 @@ button.omnisearch-submit::before {
 button.omnisearch-submit span {
 	display: none;
 }
+
+.wp-list-table .column-snippet {
+	width: 65%;
+}
