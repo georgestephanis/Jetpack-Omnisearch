@@ -39,7 +39,7 @@ class Jetpack_Omnisearch {
 	function jetpack_admin_menu() {
 		$slug = add_submenu_page( 'jetpack', __('Omnisearch'), __('Omnisearch'), 'edit_posts', 'omnisearch', array( $this, 'omnisearch_page' ) );
 
-       add_action( "admin_print_styles-{$slug}", array( $this, 'admin_print_styles' ) );
+		add_action( "admin_print_styles-{$slug}", array( $this, 'admin_print_styles' ) );
 	}
 
 	function admin_print_styles() {
@@ -93,7 +93,6 @@ class Jetpack_Omnisearch {
 			)
 		) );
 	}
-
 
 }
 new Jetpack_Omnisearch;
