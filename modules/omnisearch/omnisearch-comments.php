@@ -1,7 +1,10 @@
 <?php
 
-class Jetpack_Omnisearch_Comments {
+require_once( ABSPATH . 'wp-admin/includes/class-wp-comments-list-table.php' );
+
+class Jetpack_Omnisearch_Comments extends WP_Comments_List_Table {
 	static $instance;
+	var $checkbox = false;
 
 	function __construct() {
 		self::$instance = $this;
@@ -11,30 +14,36 @@ class Jetpack_Omnisearch_Comments {
 	function search( $results, $search_term ) {
 		$search_link = ' <a href="' . admin_url( "edit-comments.php?s={$search_term}" ) . '" class="add-new-h2">' . __('Search Comments') . '</a>';
 		$html = '<h2>' . __('Comments') . $search_link . '</h2>';
+		parent::__construct();
 
-		$comments = get_comments( array(
-			'status' => 'approve',
-			'search' => $search_term,
-			'number' => 10,
-		) );
-
-		if( ! empty( $comments ) ) {
-			$html .= '<ul>';
-			foreach( $comments as $comment ) {
-				$html .= '<li>'
-						.'<p>On <strong><a href="' . get_permalink( $comment->comment_post_ID ) . '">'
-							.get_the_title( $comment->comment_post_ID ) . '</a>, '
-							.'<a href="' . get_comment_link( $comment ) . '">' . $comment->comment_author . ' said:</a></strong></p>'
-						.wpautop( $comment->comment_content )
-						.'</li>';
-			}
-			$html .= '</ul>';
-		} else {
-			$html .= '<p>' . __('No results found.') . '</p>';
-		}
+		ob_start();
+		$this->prepare_items();
+		$this->_column_headers = array( $this->get_columns(), array(), array() );
+		$this->display();
+		$html .= ob_get_clean();
 
 		$results[ __CLASS__ ] = $html;
 		return $results;
+	}
+
+	function get_per_page( $comment_status ) {
+		return 10;
+	}
+
+	function get_sortable_columns() {
+		return array();
+	}
+
+	function get_bulk_actions() {
+		return array();
+	}
+
+	function pagination() {
+		
+	}
+
+	function extra_tablenav( $which ) {
+		
 	}
 
 }

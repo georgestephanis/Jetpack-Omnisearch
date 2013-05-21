@@ -44,6 +44,14 @@ button.omnisearch-submit span {
 	width: 65%;
 }
 
+.wp-list-table .column-date {
+	width: 15%;
+}
+
+.comments .column-author {
+	width: 20%;
+}
+
 .tablenav {
 	height: 0;
 }
