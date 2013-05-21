@@ -1,5 +1,7 @@
 <?php
 
+require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+
 class Jetpack_Omnisearch_Posts extends WP_List_Table {
 	static $instance;
 	var $post_type = 'post';

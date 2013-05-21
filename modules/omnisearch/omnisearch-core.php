@@ -8,7 +8,6 @@ Version: 1.0
 Author URI: http://stephanis.info/
 */
 
-require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 require_once( dirname(__FILE__) . '/omnisearch-posts.php' );
 require_once( dirname(__FILE__) . '/omnisearch-pages.php' );
 require_once( dirname(__FILE__) . '/omnisearch-comments.php' );
