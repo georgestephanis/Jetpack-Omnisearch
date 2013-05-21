@@ -40,6 +40,39 @@ button.omnisearch-submit span {
 	display: none;
 }
 
+#results-title {
+	float: left;
+	margin-top: 0;
+	padding-top: 2em;
+}
+
+.jump-to {
+	float:right;
+	padding-top: 2.5em;
+}
+
+.jump-to a {
+	margin-left: 0.5em;
+}
+
+.back-to-top {
+	display: block;
+	float: right;
+	margin-top: 2.5em;
+}
+
+.omnisearch-results {
+	
+}
+
+.omnisearch-results > li {
+	padding-top: 2.5em;
+}
+
+.omnisearch-results > li:first-child {
+	padding-top: 0;
+}
+
 .wp-list-table .column-snippet {
 	width: 65%;
 }
@@ -54,4 +87,8 @@ button.omnisearch-submit span {
 
 .tablenav {
 	height: 0;
+}
+
+.omnisearch-results .tablenav.top {
+	margin: 5px 0;
 }

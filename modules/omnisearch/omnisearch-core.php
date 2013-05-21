@@ -65,11 +65,28 @@ class Jetpack_Omnisearch {
 				<button type="submit" class="omnisearch-submit"><span><?php _e('Search'); ?></span></button>
 			</form>
 			<?php if( ! empty( $results ) ): ?>
-				<h3><?php _e('Results:'); ?></h3>
+				<h3 id="results-title"><?php _e('Results:'); ?></h3>
+				<div class="jump-to"><strong><?php _e('Jump to:'); ?></strong></div>
+				<br class="clear" />
 				<script>var search_term = <?php echo json_encode( $s ); ?>;</script>
-				<?php echo implode( '<hr />', $results ); ?>
+				<ul class="omnisearch-results">
+					<?php foreach( $results as $id => $result ) : ?>
+						<li id="result-<?php echo $id; ?>">
+							<?php echo $result; ?>
+							<a class="back-to-top" href="#results-title"><?php _e('Back to Top &uarr;'); ?></a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
 			<?php endif; ?>
 		</div><!-- /wrap -->
+		<script>
+		jQuery(document).ready(function($){
+			$('.omnisearch-results > li').each(function(){
+				label = $(this).find('h2').first().clone().children().remove().end().text();
+				$('.jump-to').append(' <a href="#' + $(this).attr('id') + '">' + label + '</a>');
+			});
+		});
+		</script>
 		<?php
 	}
 
