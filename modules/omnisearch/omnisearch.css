@@ -1,4 +1,29 @@
 
+.wp-admin #wpwrap {
+	background: url('../../_inc/images/header-clouds.png') 0 0 repeat-x;
+}
+
+@media print,
+	(-o-min-device-pixel-ratio: 5/4),
+	(-webkit-min-device-pixel-ratio: 1.25),
+	(min-resolution: 120dpi) {
+		#wpwrap {
+			background: url('../../_inc/images/header-clouds-2x.png') 0 0 repeat-x;
+			background-size: 1600px 400px;
+		}
+}
+
+ul#adminmenu a.wp-has-current-submenu:after,
+ul#adminmenu > li.current > a.current:after {
+	border-right-color:#8da94c;
+	display: none;
+}
+
+h2.page-title {
+	color: #fff;
+	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+}
+
 form.omnisearch-form {
 	position: relative;
 }
@@ -6,8 +31,13 @@ form.omnisearch-form {
 input.omnisearch {
 	border-radius: 0.25em;
 	font-size: 2.2em;
+	line-height: 1.25;
 	padding: 0.25em 2em 0.25em 0.5em;
 	width: 100%;
+}
+
+.admin-color-mp6 input.omnisearch {
+	line-height: 1.35;
 }
 
 input.omnisearch::-webkit-search-cancel-button {
@@ -27,7 +57,7 @@ button.omnisearch-submit {
 	bottom: 0;
 }
 
-.admin-color-mp6 .omnisearch-submit {
+.admin-color-mp6 button.omnisearch-submit {
 	padding: 0.3em 0.5em 0.1em;
 }
 
@@ -41,18 +71,31 @@ button.omnisearch-submit span {
 }
 
 #results-title {
+	color: #fff;
 	float: left;
 	margin-top: 0;
 	padding-top: 2em;
+	text-shadow: 0 1px 1px rgba(0,0,0,.5);
 }
 
 .jump-to {
 	float:right;
 	padding-top: 2.5em;
+	text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+
+.jump-to strong {
+	color: #fff;
 }
 
 .jump-to a {
+	color: #fff;
 	margin-left: 0.5em;
+	text-decoration: none;
+}
+
+.jump-to a:hover {
+	text-decoration: underline;
 }
 
 .back-to-top {
