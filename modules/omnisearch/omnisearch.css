@@ -116,6 +116,10 @@ button.omnisearch-submit span {
 	padding-top: 0;
 }
 
+.omnisearch-results > li:first-child > h2 {
+	text-shadow: none;
+}
+
 .wp-list-table .column-snippet {
 	width: 65%;
 }
