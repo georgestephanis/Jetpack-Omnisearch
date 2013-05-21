@@ -43,3 +43,7 @@ button.omnisearch-submit span {
 .wp-list-table .column-snippet {
 	width: 65%;
 }
+
+.tablenav {
+	height: 0;
+}
