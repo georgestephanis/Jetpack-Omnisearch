@@ -70,26 +70,25 @@ button.omnisearch-submit span {
 	display: none;
 }
 
-#results-title {
+#results-title,
+.jump-to {
 	color: #fff;
+	font-size: 1.2em;
+	line-height: 1.5;
 	float: left;
 	margin-top: 0;
 	padding-top: 2em;
-	text-shadow: 0 1px 1px rgba(0,0,0,.5);
+	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
 }
 
 .jump-to {
-	float:right;
-	padding-top: 2.5em;
-	text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+	float: right;
+	text-align: right;
 }
 
-.jump-to strong {
-	color: #fff;
-}
-
+.jump-to strong,
 .jump-to a {
-	color: #fff;
+	color: inherit;
 	margin-left: 0.5em;
 	text-decoration: none;
 }
