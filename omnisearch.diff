@@ -17,7 +17,7 @@ Index: modules/omnisearch/omnisearch.css
 ===================================================================
 --- modules/omnisearch/omnisearch.css	(revision 0)
 +++ modules/omnisearch/omnisearch.css	(revision 0)
-@@ -0,0 +1,140 @@
+@@ -0,0 +1,145 @@
 +
 +.wp-admin #wpwrap {
 +	background: url('../../_inc/images/header-clouds.png') 200% 0 repeat-x;
@@ -99,6 +99,11 @@ Index: modules/omnisearch/omnisearch.css
 +	margin-top: 0;
 +	padding-top: 2em;
 +	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
++}
++
++#results-title,
++.jump-to strong {
++	font-weight: 600;
 +}
 +
 +.jump-to {
