@@ -21,13 +21,13 @@ class Jetpack_Omnisearch_Plugins extends WP_Plugin_Install_List_Table {
 		$html = '<h2>' . __('Plugins') . $search_link . '</h2>';
 
 		$html .= '<div id="' . __CLASS__ . '_results">' . __('Loading &hellip;') . '</div>';
-		$html .= '<script>jQuery("#' . __CLASS__ . '_results").load(ajaxurl,{action:"omnisearch_plugins",search_term:search_term});</script>';
+		$html .= '<script>jQuery("#' . __CLASS__ . '_results").load(ajaxurl,{action:"omnisearch_plugins",search_term:search_term,num_results:num_results});</script>';
 
 		$results[ __CLASS__ ] = $html;
 		return $results;
 	}
 
-	function results_html( $search_term ) {
+	function results_html( $search_term, $num_results = null ) {
 		$_GET['tab'] = 'search';
 		$GLOBALS['hook_suffix'] = 'foo';
 		$_REQUEST['s'] = $search_term;
@@ -35,6 +35,8 @@ class Jetpack_Omnisearch_Plugins extends WP_Plugin_Install_List_Table {
 
 		ob_start();
 		$this->prepare_items();
+		$num_results = intval( $num_results ) ? intval( $num_results ) : Jetpack_Omnisearch::$num_results;
+		$this->items = array_slice( $this->items, 0, $num_results );
 		remove_action( 'install_plugins_table_header', 'install_search_form' );
 		$this->display();
 		$html = ob_get_clean();
@@ -44,7 +46,9 @@ class Jetpack_Omnisearch_Plugins extends WP_Plugin_Install_List_Table {
 
 	function wp_ajax_omnisearch_plugins() {
 		$search_term = $_REQUEST['search_term'];
-		wp_die( $this->results_html( $search_term ) );
+		$num_results = isset( $_REQUEST['num_results'] ) ? $_REQUEST['num_results'] : null;
+		echo $this->results_html( $search_term, $num_results );
+		exit;
 	}
 
 	function get_bulk_actions() {

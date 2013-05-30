@@ -26,6 +26,7 @@ if ( current_user_can( 'install_plugins' ) ) {
 
 class Jetpack_Omnisearch {
 	static $instance;
+	static $num_results = 5;
 
 	function __construct() {
 		self::$instance = $this;
@@ -74,7 +75,7 @@ class Jetpack_Omnisearch {
 				<h3 id="results-title"><?php _e('Results:'); ?></h3>
 				<div class="jump-to"><strong><?php _e('Jump to:'); ?></strong></div>
 				<br class="clear" />
-				<script>var search_term = <?php echo json_encode( $s ); ?>;</script>
+				<script>var search_term = <?php echo json_encode( $s ); ?>, num_results = <?php echo json_encode( self::$num_results ); ?>;</script>
 				<ul class="omnisearch-results">
 					<?php foreach( $results as $id => $result ) : ?>
 						<li id="result-<?php echo $id; ?>">

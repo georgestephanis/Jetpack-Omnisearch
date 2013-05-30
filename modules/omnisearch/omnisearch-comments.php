@@ -29,7 +29,7 @@ class Jetpack_Omnisearch_Comments extends WP_Comments_List_Table {
 	}
 
 	function get_per_page( $comment_status ) {
-		return 10;
+		return Jetpack_Omnisearch::$num_results;
 	}
 
 	function get_sortable_columns() {
