@@ -81,6 +81,11 @@ button.omnisearch-submit span {
 	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
 }
 
+#results-title,
+.jump-to strong {
+	font-weight: 600;
+}
+
 .jump-to {
 	float: right;
 	text-align: right;
