@@ -114,5 +114,3 @@ class Jetpack_Omnisearch_Posts extends WP_List_Table {
 	}
 
 }
-
-new Jetpack_Omnisearch_Posts;

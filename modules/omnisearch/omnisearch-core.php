@@ -8,13 +8,21 @@ Version: 1.0
 Author URI: http://stephanis.info/
 */
 
+// Declare the new instances here, so that the classes can
+// be pulled in elsewhere if desired without activating them.
 require_once( dirname(__FILE__) . '/omnisearch-posts.php' );
+new Jetpack_Omnisearch_Posts;
+
 require_once( dirname(__FILE__) . '/omnisearch-pages.php' );
+new Jetpack_Omnisearch_Pages;
+
 require_once( dirname(__FILE__) . '/omnisearch-comments.php' );
+new Jetpack_Omnisearch_Comments;
 
-
-if( current_user_can( 'install_plugins' ) )
+if ( current_user_can( 'install_plugins' ) ) {
 	require_once( dirname(__FILE__) . '/omnisearch-plugins.php' );
+	new Jetpack_Omnisearch_Plugins;
+}
 
 class Jetpack_Omnisearch {
 	static $instance;
