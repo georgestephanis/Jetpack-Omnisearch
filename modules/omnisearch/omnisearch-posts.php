@@ -100,11 +100,11 @@ class Jetpack_Omnisearch_Posts extends WP_List_Table {
 		switch ( $column_name ) {
 			case 'id':
 				return $post->ID;
-			case 'post_title':
+			case 'post_title': // Will never happen, class method overrides.
 				return $post->post_title;
 			case 'snippet':
 				return wp_trim_words( $post->post_content, 55 );
-			case 'date':
+			case 'date': // Will never happen, class method overrides.
 				$d = get_option('date_format');
 				$t = get_option('time_format');
 				return get_post_modified_time( $d, 0, $post, 1 ) . ' @ ' . get_post_modified_time( $t, 0, $post, 1 );
