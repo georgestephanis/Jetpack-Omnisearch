@@ -12,9 +12,6 @@ require_once( dirname(__FILE__) . '/omnisearch-posts.php' );
 require_once( dirname(__FILE__) . '/omnisearch-pages.php' );
 require_once( dirname(__FILE__) . '/omnisearch-comments.php' );
 
-$jetpack_active_modules = get_option( 'jetpack_active_modules' );
-if ( in_array( 'contact-form', $jetpack_active_modules ) )
-	require_once( dirname(__FILE__) . '/omnisearch-grunion.php' );
 
 if( current_user_can( 'install_plugins' ) )
 	require_once( dirname(__FILE__) . '/omnisearch-plugins.php' );
