@@ -1,6 +1,6 @@
 
 .wp-admin #wpwrap {
-	background: url('../../_inc/images/header-clouds.png') 0 0 repeat-x;
+	background: url('../../_inc/images/header-clouds.png') 200% 0 repeat-x;
 }
 
 @media print,
