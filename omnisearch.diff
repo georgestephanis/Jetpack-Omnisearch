@@ -1,0 +1,547 @@
+Index: modules/omnisearch.php
+===================================================================
+--- modules/omnisearch.php	(revision 0)
++++ modules/omnisearch.php	(revision 0)
+@@ -0,0 +1,10 @@
++<?php
++/**
++ * Module Name: Omnisearch
++ * Module Description: A single search box, that lets you search many different things.
++ * Sort Order: 1
++ * First Introduced: 2.2.5
++ * Requires Connection: No
++ */
++
++require_once( dirname( __FILE__ ) . '/omnisearch/omnisearch-core.php' );
+Index: modules/omnisearch/omnisearch.css
+===================================================================
+--- modules/omnisearch/omnisearch.css	(revision 0)
++++ modules/omnisearch/omnisearch.css	(revision 0)
+@@ -0,0 +1,140 @@
++
++.wp-admin #wpwrap {
++	background: url('../../_inc/images/header-clouds.png') 200% 0 repeat-x;
++}
++
++@media print,
++	(-o-min-device-pixel-ratio: 5/4),
++	(-webkit-min-device-pixel-ratio: 1.25),
++	(min-resolution: 120dpi) {
++		#wpwrap {
++			background: url('../../_inc/images/header-clouds-2x.png') 0 0 repeat-x;
++			background-size: 1600px 400px;
++		}
++}
++
++ul#adminmenu a.wp-has-current-submenu:after,
++ul#adminmenu > li.current > a.current:after {
++	border-right-color:#8da94c;
++	display: none;
++}
++
++h2.page-title {
++	color: #fff;
++	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
++}
++
++form.omnisearch-form {
++	position: relative;
++}
++
++input.omnisearch {
++	border-radius: 0.25em;
++	font-size: 2.2em;
++	line-height: 1.25;
++	padding: 0.25em 2em 0.25em 0.5em;
++	width: 100%;
++}
++
++.admin-color-mp6 input.omnisearch {
++	line-height: 1.35;
++}
++
++input.omnisearch::-webkit-search-cancel-button {
++	display: none;
++}
++
++button.omnisearch-submit {
++	background: transparent;
++	border: 0;
++	cursor: pointer;
++	display: block;
++	font-size: 2.45em;
++	padding: 0.25em 0.5em 0;
++	text-align: center;
++	position: absolute;
++	right: 0;
++	bottom: 0;
++}
++
++.admin-color-mp6 button.omnisearch-submit {
++	padding: 0.3em 0.5em 0.1em;
++}
++
++button.omnisearch-submit::before {
++	font-family: 'Genericons';
++	content: '\f400';
++}
++
++button.omnisearch-submit span {
++	display: none;
++}
++
++#results-title,
++.jump-to {
++	color: #fff;
++	font-size: 1.2em;
++	line-height: 1.5;
++	float: left;
++	margin-top: 0;
++	padding-top: 2em;
++	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
++}
++
++.jump-to {
++	float: right;
++	text-align: right;
++}
++
++.jump-to strong,
++.jump-to a {
++	color: inherit;
++	margin-left: 0.5em;
++	text-decoration: none;
++}
++
++.jump-to a:hover {
++	text-decoration: underline;
++}
++
++.back-to-top {
++	display: block;
++	float: right;
++	margin-top: 2.5em;
++}
++
++.omnisearch-results {
++	
++}
++
++.omnisearch-results > li {
++	padding-top: 2.5em;
++}
++
++.omnisearch-results > li:first-child {
++	padding-top: 0;
++}
++
++.omnisearch-results > li:first-child > h2 {
++	text-shadow: none;
++}
++
++.wp-list-table .column-snippet {
++	width: 65%;
++}
++
++.wp-list-table .column-date {
++	width: 15%;
++}
++
++.comments .column-author {
++	width: 20%;
++}
++
++.tablenav {
++	height: 0;
++}
++
++.omnisearch-results .tablenav.top {
++	margin: 5px 0;
++}
+\ No newline at end of file
+Index: modules/omnisearch/omnisearch-comments.php
+===================================================================
+--- modules/omnisearch/omnisearch-comments.php	(revision 0)
++++ modules/omnisearch/omnisearch-comments.php	(revision 0)
+@@ -0,0 +1,51 @@
++<?php
++
++if( ! class_exists( 'WP_Comments_List_Table' ) )
++	require_once( ABSPATH . 'wp-admin/includes/class-wp-comments-list-table.php' );
++
++class Jetpack_Omnisearch_Comments extends WP_Comments_List_Table {
++	static $instance;
++	var $checkbox = false;
++
++	function __construct() {
++		self::$instance = $this;
++		add_filter( 'omnisearch_results', array( $this, 'search'), 10, 2 );
++	}
++
++	function search( $results, $search_term ) {
++		$search_url = esc_url( admin_url( sprintf( 'edit-comments.php?s=%s', urlencode( $search_term ) ) ) );
++		$search_link = sprintf( ' <a href="%s" class="add-new-h2">%s</a>', $search_url, __('Search Comments') );
++		$html = '<h2>' . __('Comments') . $search_link . '</h2>';
++		parent::__construct();
++
++		ob_start();
++		$this->prepare_items();
++		$this->_column_headers = array( $this->get_columns(), array(), array() );
++		$this->display();
++		$html .= ob_get_clean();
++
++		$results[ __CLASS__ ] = $html;
++		return $results;
++	}
++
++	function get_per_page( $comment_status ) {
++		return Jetpack_Omnisearch::$num_results;
++	}
++
++	function get_sortable_columns() {
++		return array();
++	}
++
++	function get_bulk_actions() {
++		return array();
++	}
++
++	function pagination() {
++		
++	}
++
++	function extra_tablenav( $which ) {
++		
++	}
++
++}
+Index: modules/omnisearch/omnisearch-core.php
+===================================================================
+--- modules/omnisearch/omnisearch-core.php	(revision 0)
++++ modules/omnisearch/omnisearch-core.php	(revision 0)
+@@ -0,0 +1,123 @@
++<?php
++/*
++Plugin Name: Jetpack Omnisearch
++Plugin URI: https://github.com/georgestephanis/omnisearch
++Description: Enables an omnisearch (search ALL THE THINGS) in WordPress.  Hopefully rolling into Jetpack soon, maybe core later?
++Author: George Stephanis
++Version: 1.0
++Author URI: http://stephanis.info/
++*/
++
++// Declare the new instances here, so that the classes can
++// be pulled in elsewhere if desired without activating them.
++require_once( dirname(__FILE__) . '/omnisearch-posts.php' );
++new Jetpack_Omnisearch_Posts;
++
++require_once( dirname(__FILE__) . '/omnisearch-pages.php' );
++new Jetpack_Omnisearch_Pages;
++
++require_once( dirname(__FILE__) . '/omnisearch-comments.php' );
++new Jetpack_Omnisearch_Comments;
++
++if ( current_user_can( 'install_plugins' ) ) {
++	require_once( dirname(__FILE__) . '/omnisearch-plugins.php' );
++	new Jetpack_Omnisearch_Plugins;
++}
++
++class Jetpack_Omnisearch {
++	static $instance;
++	static $num_results = 5;
++
++	function __construct() {
++		self::$instance = $this;
++		add_action( 'wp_loaded', array( $this, 'wp_loaded' ) );
++		add_action(	'jetpack_admin_menu', array( $this, 'jetpack_admin_menu' ) );
++		if( is_admin() ) {
++			add_action( 'admin_bar_menu', array( $this, 'admin_bar_search' ), 4 );
++		}
++	}
++
++	function wp_loaded() {
++		$deps = null;
++		if ( wp_style_is( 'genericons', 'registered' ) ) {
++			$deps = array( 'genericons' );
++		}
++
++		wp_register_style( 'omnisearch-admin', plugins_url( 'omnisearch.css', __FILE__ ), $deps );
++	}
++
++	function jetpack_admin_menu() {
++		$slug = add_submenu_page( 'jetpack', __('Omnisearch'), __('Omnisearch'), 'edit_posts', 'omnisearch', array( $this, 'omnisearch_page' ) );
++
++		add_action( "admin_print_styles-{$slug}", array( $this, 'admin_print_styles' ) );
++	}
++
++	function admin_print_styles() {
++		wp_enqueue_style( 'omnisearch-admin' );
++	}
++
++	function omnisearch_page() {
++		$results = array();
++		$s = isset( $_GET['s'] ) ? $_GET['s'] : '';
++		if( $s ) {
++			$results = apply_filters( 'omnisearch_results', $results, $s );
++		}
++		?>
++		<div class="wrap">
++			<h2 class="page-title"><?php _e('Jetpack Omnisearch Prototype'); ?></h2>
++			<br class="clear" />
++			<form action="<?php echo admin_url( 'admin.php' ); ?>" method="get" class="omnisearch-form">
++				<input type="hidden" name="page" value="omnisearch" />
++				<input type="search" name="s" class="omnisearch" placeholder="<?php _e('Search Everything'); ?>" value="<?php echo esc_attr( $s ); ?>" />
++				<button type="submit" class="omnisearch-submit"><span><?php _e('Search'); ?></span></button>
++			</form>
++			<?php if( ! empty( $results ) ): ?>
++				<h3 id="results-title"><?php _e('Results:'); ?></h3>
++				<div class="jump-to"><strong><?php _e('Jump to:'); ?></strong></div>
++				<br class="clear" />
++				<script>var search_term = <?php echo json_encode( $s ); ?>, num_results = <?php echo json_encode( self::$num_results ); ?>;</script>
++				<ul class="omnisearch-results">
++					<?php foreach( $results as $id => $result ) : ?>
++						<li id="result-<?php echo $id; ?>">
++							<?php echo $result; ?>
++							<a class="back-to-top" href="#results-title"><?php _e('Back to Top &uarr;'); ?></a>
++						</li>
++					<?php endforeach; ?>
++				</ul>
++			<?php endif; ?>
++		</div><!-- /wrap -->
++		<script>
++		jQuery(document).ready(function($){
++			$('.omnisearch-results > li').each(function(){
++				label = $(this).find('h2').first().clone().children().remove().end().text();
++				$('.jump-to').append(' <a href="#' + $(this).attr('id') + '">' + label + '</a>');
++			});
++		});
++		</script>
++		<?php
++	}
++
++	function admin_bar_search( $wp_admin_bar ) {
++		if( ! is_admin() ) return;
++
++		$search_terms = isset( $_GET[ 's' ] ) ? esc_attr( $_GET['s'] ) : '';
++
++		$form  = '<form action="' . esc_url( admin_url( 'admin.php' ) ) . '" method="get" id="adminbarsearch">';
++		$form .= '<input type="hidden" name="page" value="omnisearch" />';
++		$form .= '<input class="adminbar-input" name="s" id="adminbar-search" type="search" value="' . $search_terms . '" maxlength="150" placeholder="' . __('Search Everything') . '" />';
++		$form .= '<input type="submit" class="adminbar-button" value="' . __('Search') . '"/>';
++		$form .= '</form>';
++
++		$wp_admin_bar->add_menu( array(
++			'parent' => 'top-secondary',
++			'id'     => 'search',
++			'title'  => $form,
++			'meta'   => array(
++				'class'    => 'admin-bar-search',
++				'tabindex' => -1,
++			)
++		) );
++	}
++
++}
++new Jetpack_Omnisearch;
+Index: modules/omnisearch/omnisearch-posts.php
+===================================================================
+--- modules/omnisearch/omnisearch-posts.php	(revision 0)
++++ modules/omnisearch/omnisearch-posts.php	(revision 0)
+@@ -0,0 +1,117 @@
++<?php
++
++if( ! class_exists( 'WP_List_Table' ) )
++	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
++
++class Jetpack_Omnisearch_Posts extends WP_List_Table {
++	static $instance;
++	var $post_type = 'post';
++
++	function __construct() {
++		self::$instance = $this;
++		add_filter( 'omnisearch_results', array( $this, 'search'), 10, 2 );
++	}
++
++	function search( $results, $search_term ) {
++		parent::__construct();
++
++		$this->post_type_obj = get_post_type_object( $this->post_type );
++
++		$search_url = esc_url( admin_url( sprintf( 'edit.php?post_type=%s&s=%s', urlencode( $this->post_type_obj->name ), urlencode( $search_term ) ) ) );
++		$search_link = sprintf( ' <a href="%s" class="add-new-h2">%s</a>', $search_url, $this->post_type_obj->labels->search_items );
++		$html = '<h2>' . $this->post_type_obj->labels->name . $search_link .'</h2>';
++
++		$this->posts = get_posts( array( 's' => $search_term, 'post_type' => $this->post_type, 'posts_per_page' => Jetpack_Omnisearch::$num_results, 'post_status' => 'any' ) );
++
++		$this->prepare_items();
++
++		ob_start();
++		$this->display();
++		$html .= ob_get_clean();
++
++		$results[ __CLASS__ . "_{$this->post_type}" ] = $html;
++		return $results;
++	}
++
++	function get_columns() {
++		$columns = array(
++		#	'id' => __('ID'),
++			'post_title' => __('Title'),
++			'snippet' => __('Snippet'),
++			'date' => __('Date'),
++		);
++		return $columns;
++	}
++
++	function prepare_items() {
++		$columns = $this->get_columns();
++		$hidden = array();
++		$sortable = array();
++		$this->_column_headers = array( $columns, $hidden, $sortable );
++		$this->items = $this->posts;
++	}
++
++	function column_post_title( $post ) {
++		$actions = array();
++		if ( current_user_can( $this->post_type_obj->cap->edit_post, $post ) ) {
++			$actions['edit'] = sprintf( '<a href="%s">%s</a>', get_edit_post_link( $post->ID ), $this->post_type_obj->labels->edit_item );
++		}
++		if ( current_user_can( $this->post_type_obj->cap->delete_post, $post ) ) {
++			$actions['delete'] = sprintf( '<a href="%s">%s</a>', get_delete_post_link( $post->ID ), __('Trash') );
++		}
++		$actions['view'] = sprintf( '<a href="%s">%s</a>', get_permalink( $post->ID ), $this->post_type_obj->labels->view_item );
++		return wptexturize( $post->post_title ) . $this->row_actions( $actions );
++	}
++
++	function column_date( $post ) {
++		$html = '';
++
++		if ( '0000-00-00 00:00:00' == $post->post_date ) {
++			$t_time = $h_time = __( 'Unpublished' );
++			$time_diff = 0;
++		} else {
++			$t_time = date( __( 'Y/m/d g:i:s A' ), mysql2date( 'G', $post->post_date ) );
++			$m_time = $post->post_date;
++			$time = get_post_time( 'G', true, $post );
++
++			$time_diff = time() - $time;
++
++			if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS )
++				$h_time = sprintf( __( '%s ago' ), human_time_diff( $time ) );
++			else
++				$h_time = mysql2date( __( 'Y/m/d' ), $m_time );
++		}
++
++		$html .= '<abbr title="' . $t_time . '">' . $h_time . '</abbr>';
++		$html .= '<br />';
++		if ( 'publish' == $post->post_status ) {
++			$html .= __( 'Published' );
++		} elseif ( 'future' == $post->post_status ) {
++			if ( $time_diff > 0 )
++				$html .= '<strong class="attention">' . __( 'Missed schedule' ) . '</strong>';
++			else
++				$html .= __( 'Scheduled' );
++		} else {
++			$html .= __( 'Last Modified' );
++		}
++		return $html;
++	}
++
++	function column_default( $post, $column_name ) {
++		switch ( $column_name ) {
++			case 'id':
++				return $post->ID;
++			case 'post_title': // Will never happen, class method overrides.
++				return $post->post_title;
++			case 'snippet':
++				return wp_trim_words( $post->post_content, 55 );
++			case 'date': // Will never happen, class method overrides.
++				$d = get_option('date_format');
++				$t = get_option('time_format');
++				return get_post_modified_time( $d, 0, $post, 1 ) . ' @ ' . get_post_modified_time( $t, 0, $post, 1 );
++			default:
++				return print_r( $post, true );
++		}
++	}
++
++}
+Index: modules/omnisearch/omnisearch-pages.php
+===================================================================
+--- modules/omnisearch/omnisearch-pages.php	(revision 0)
++++ modules/omnisearch/omnisearch-pages.php	(revision 0)
+@@ -0,0 +1,8 @@
++<?php
++
++if( ! class_exists( 'Jetpack_Omnisearch_Posts' ) )
++	require_once( dirname(__FILE__) . '/omnisearch-posts.php' );
++
++class Jetpack_Omnisearch_Pages extends Jetpack_Omnisearch_Posts {
++	var $post_type = 'page';
++}
+Index: modules/omnisearch/omnisearch-plugins.php
+===================================================================
+--- modules/omnisearch/omnisearch-plugins.php	(revision 0)
++++ modules/omnisearch/omnisearch-plugins.php	(revision 0)
+@@ -0,0 +1,62 @@
++<?php
++
++if( ! class_exists( 'WP_Plugin_Install_List_Table' ) )
++	require_once( ABSPATH . 'wp-admin/includes/class-wp-plugin-install-list-table.php' );
++
++class Jetpack_Omnisearch_Plugins extends WP_Plugin_Install_List_Table {
++	static $instance;
++
++	function __construct() {
++		self::$instance = $this;
++		add_filter( 'omnisearch_results', array( $this, 'search'), 10, 2 );
++		add_action( 'wp_ajax_omnisearch_plugins', array( $this, 'wp_ajax_omnisearch_plugins' ) );
++	}
++
++	function search( $results, $search_term ) {
++		wp_enqueue_script( 'plugin-install' );
++		add_thickbox();
++
++		$search_url = esc_url( admin_url( sprintf( 'plugin-install.php?tab=search&s=%s', urlencode( $search_term ) ) ) );
++		$search_link = sprintf( ' <a href="%s" class="add-new-h2">%s</a>', $search_url, __('Search Plugins') );
++		$html = '<h2>' . __('Plugins') . $search_link . '</h2>';
++
++		$html .= '<div id="' . __CLASS__ . '_results">' . __('Loading &hellip;') . '</div>';
++		$html .= '<script>jQuery("#' . __CLASS__ . '_results").load(ajaxurl,{action:"omnisearch_plugins",search_term:search_term,num_results:num_results});</script>';
++
++		$results[ __CLASS__ ] = $html;
++		return $results;
++	}
++
++	function results_html( $search_term, $num_results = null ) {
++		$_GET['tab'] = 'search';
++		$GLOBALS['hook_suffix'] = 'foo';
++		$_REQUEST['s'] = $search_term;
++		parent::__construct();
++
++		ob_start();
++		$this->prepare_items();
++		$num_results = intval( $num_results ) ? intval( $num_results ) : Jetpack_Omnisearch::$num_results;
++		$this->items = array_slice( $this->items, 0, $num_results );
++		remove_action( 'install_plugins_table_header', 'install_search_form' );
++		$this->display();
++		$html = ob_get_clean();
++
++		return $html;
++	}
++
++	function wp_ajax_omnisearch_plugins() {
++		$search_term = $_REQUEST['search_term'];
++		$num_results = isset( $_REQUEST['num_results'] ) ? $_REQUEST['num_results'] : null;
++		echo $this->results_html( $search_term, $num_results );
++		exit;
++	}
++
++	function get_bulk_actions() {
++		return array();
++	}
++
++	function pagination() {
++		
++	}
++
++}
