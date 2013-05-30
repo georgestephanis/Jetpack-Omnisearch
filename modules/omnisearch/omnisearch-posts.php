@@ -17,7 +17,8 @@ class Jetpack_Omnisearch_Posts extends WP_List_Table {
 
 		$this->post_type_obj = get_post_type_object( $this->post_type );
 
-		$search_link = sprintf( ' <a href="%s" class="add-new-h2">%s</a>', admin_url( "edit.php?post_type={$this->post_type_obj->name}&s={$search_term}" ), $this->post_type_obj->labels->search_items );
+		$search_url = esc_url( admin_url( sprintf( 'edit.php?post_type=%s&s=%s', urlencode( $this->post_type_obj->name ), urlencode( $search_term ) ) ) );
+		$search_link = sprintf( ' <a href="%s" class="add-new-h2">%s</a>', $search_url, $this->post_type_obj->labels->search_items );
 		$html = '<h2>' . $this->post_type_obj->labels->name . $search_link .'</h2>';
 
 		$this->posts = get_posts( array( 's' => $search_term, 'post_type' => $this->post_type, 'posts_per_page' => 10, 'post_status' => 'any' ) );

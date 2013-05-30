@@ -16,7 +16,8 @@ class Jetpack_Omnisearch_Plugins extends WP_Plugin_Install_List_Table {
 		wp_enqueue_script( 'plugin-install' );
 		add_thickbox();
 
-		$search_link = ' <a href="' . admin_url( "plugin-install.php?tab=search&s={$search_term}" ) . '" class="add-new-h2">' . __('Search Plugins') . '</a>';
+		$search_url = esc_url( admin_url( sprintf( 'plugin-install.php?tab=search&s=%s', urlencode( $search_term ) ) ) );
+		$search_link = sprintf( ' <a href="%s" class="add-new-h2">%s</a>', $search_url, __('Search Plugins') );
 		$html = '<h2>' . __('Plugins') . $search_link . '</h2>';
 
 		$html .= '<div id="' . __CLASS__ . '_results">' . __('Loading &hellip;') . '</div>';
