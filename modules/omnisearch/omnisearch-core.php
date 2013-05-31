@@ -1,12 +1,4 @@
 <?php
-/*
-Plugin Name: Jetpack Omnisearch
-Plugin URI: https://github.com/georgestephanis/omnisearch
-Description: Enables an omnisearch (search ALL THE THINGS) in WordPress.  Hopefully rolling into Jetpack soon, maybe core later?
-Author: George Stephanis
-Version: 1.0
-Author URI: http://stephanis.info/
-*/
 
 // Declare the new instances here, so that the classes can
 // be pulled in elsewhere if desired without activating them.
